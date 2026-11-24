@@ -1,0 +1,18 @@
+{
+  "name": "gigachat",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "dev": "wrangler dev --test-scheduled --var IG_API_BASE:http://127.0.0.1:8788 --var FB_API_BASE:http://127.0.0.1:8788/fb",
+    "mock": "node test/mock-instagram.mjs",
+    "test": "node test/e2e.mjs && node test/e2e.mjs --fb && node test/e2e.mjs --burst",
+    "db:local": "wrangler d1 migrations apply gigachat_db --local",
+    "db:remote": "wrangler d1 migrations apply gigachat_db --remote",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}

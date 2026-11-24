@@ -1,0 +1,33 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "gigachat",
+  "main": "src/index.js",
+  "compatibility_date": "2026-11-01",
+  "observability": { "enabled": true },
+
+  // Runs the bot's check once a minute ("standard mode").
+  "triggers": { "crons": ["* * * * *"] },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "gigachat_db",
+      // Your database id, from `wrangler d1 create`.
+      "database_id": "REPLACE_WITH_YOUR_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  "vars": {
+    "IG_API_BASE": "https://graph.instagram.com",
+    "FB_API_BASE": "https://graph.facebook.com",
+    "IG_API_VERSION": "v24.0",
+    // Max outside calls per run. Cloudflare free plan hard limit is 50.
+    "CALL_BUDGET": "45",
+    // Checks per cron run, in seconds after it fires (cron can't run more than once a minute).
+    "PASS_SECONDS": "0,20,40",
+    // Time zone for times shown on the dashboard (IANA name, e.g. "Europe/London").
+    "TIMEZONE": "UTC"
+  }
+  // Secret (not in this file): ADMIN_PASSWORD  -> `wrangler secret put ADMIN_PASSWORD`
+}
