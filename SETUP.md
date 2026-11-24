@@ -36,10 +36,10 @@ This gives you the key that lets your bot use your Instagram. You make your own 
 
 1. Go to https://developers.facebook.com → log in with Facebook → **My Apps** → **Create App**.
    - First time: click **Get Started** to register as a developer. Meta may ask you to verify a phone number.
-2. App name: anything, e.g. "My GigaChat". Add your email.
-3. Use case: pick **Manage messaging & content on Instagram**.
-4. Business portfolio: pick or create one with your brand name. It does **not** need to be verified.
-5. Finish creating the app. You land on the app dashboard.
+2. **App details:** app name, anything, e.g. "My GigaChat". Check the contact email → **Next**.
+3. **Use cases:** on the left click **Business messaging**, tick **Manage messaging & content on Instagram** → **Next**.
+4. **Business:** pick your own brand's business portfolio, or click **Create a business portfolio**. It does **not** need to be verified. (Don't pick "I don't want to connect a business portfolio yet": the key step below needs one.) → **Next**.
+5. **Requirements** says "No requirements identified" → **Next** → **Overview** → **Create app**. You land on the app dashboard.
 6. Click **Customize the Manage messaging & content on Instagram use case** → left menu → **API setup with Unified login**.
 7. Add yourself as an Instagram tester:
    1. Left menu → **App roles** → **Roles** → **Instagram Testers** tab → **Add People** → type your Instagram username.
