@@ -10,7 +10,7 @@ Someone comments a keyword on your post → GigaChat replies under the comment a
 
 ## Set it up
 
-You don't need to code. Install [Claude Code](https://claude.com/claude-code), open it in an empty folder, and paste:
+You don't need to code. Install [Claude Code](https://claude.com/claude-code), open it in an empty folder, and paste (OpenAI's Codex should work too, not tested yet):
 
 ```
 Set up GigaChat from github.com/gosubay/gigachat

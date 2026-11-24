@@ -9,6 +9,7 @@ Takes about 30 minutes. You never need to write code.
 - A Facebook account (Meta's developer site logs in with it).
 - A computer (Windows or Mac).
 - [Claude Code](https://claude.com/claude-code) (needs a Claude subscription).
+  - Using ChatGPT? OpenAI's [Codex](https://openai.com/codex/) should work too (not tested yet). Not the normal ChatGPT chat: the setup needs an AI that can run commands on your computer.
 
 ## 1. Instagram settings (2 minutes, on your phone)
 1. Instagram → Settings → **Account type and tools** → switch to **Professional** if you haven't. Your account must be public.
@@ -20,7 +21,7 @@ Takes about 30 minutes. You never need to write code.
 
 ## 3. Let Claude Code install the bot (10 minutes)
 1. Make an empty folder, for example `gigachat` in your Documents.
-2. Open Claude Code in that folder and paste:
+2. Open Claude Code (or Codex) in that folder and paste:
    ```
    Set up GigaChat from github.com/gosubay/gigachat
    ```
