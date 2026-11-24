@@ -156,7 +156,7 @@ export function settingsPage(s, test, flash, flashErr) {
   return layout('Settings', `${testHtml}
 <div class="card"><h2>Instagram connection</h2>
 <p>${s.access_token ? `Connected as <b>@${esc(s.ig_username || '?')}</b>${s.token_status === 'invalid' ? ' — <span class="bad">token rejected, paste a new one</span>' : ''}` : '<span class="warn">Not connected yet.</span>'}</p>
-<form method="post" action="/settings/token"><label>Instagram access token <span class="hint">— from Meta's developer site → your app → Instagram → API setup → "Generate token". Starts with IG… or EAA…</span></label>
+<form method="post" action="/settings/token"><label>Instagram access token <span class="hint">— from developers.facebook.com → your app → API setup with Unified login → "Generate token". Starts with EAA (older apps: IG)</span></label>
 <input type="password" name="token" placeholder="Paste token here" autocomplete="off"><p class="row"><button class="btn">Save and test</button></p></form>
 ${s.access_token ? `<form method="post" action="/settings/test" class="inline"><button class="btn sec">Run connection test again</button></form>` : ''}</div>
 <div class="card"><h2>Pause switch</h2><p>${s.paused === '1' ? 'The bot is <b class="warn">paused</b>: it sends nothing.' : 'The bot is <b class="ok">on</b>.'}</p>

@@ -23,7 +23,7 @@ Tell the user in 3 lines what will happen: you install the bot on their free Clo
 3. If they have several Cloudflare accounts, ask which one and set `account_id` in `wrangler.jsonc`.
 
 ## 3. Database
-1. `npx wrangler d1 create gigachat_db`. Copy the `database_id` it prints into `wrangler.jsonc`, replacing `REPLACE_WITH_YOUR_DATABASE_ID`. Don't let wrangler add a second D1 entry.
+1. `npx wrangler d1 create gigachat_db`. Copy the `database_id` it prints into `wrangler.jsonc`, replacing `REPLACE_WITH_YOUR_DATABASE_ID`. Ignore the config snippet wrangler prints (its binding name is wrong for this project; the bot needs `DB`) and answer **no** if it offers to add it.
    - If it says the name already exists (a previous attempt), use `npx wrangler d1 list` to get that id.
 2. `npm run db:remote` (creates the tables; answer yes if asked).
 
@@ -35,7 +35,7 @@ Set `TIMEZONE` in `wrangler.jsonc` to the user's IANA time zone: `node -e "conso
    - If it asks to register a workers.dev subdomain, let the user pick a short name (it becomes part of their bot's address).
 2. Dashboard password: generate a random 20-character password (letters and digits). Save it to `DASHBOARD-PASSWORD.txt` in the repo folder (gitignored). Set it: pipe it into `npx wrangler secret put ADMIN_PASSWORD` (don't echo it into a shared log).
 3. Check the bot answers: fetch `<address>/login` until it returns 200 (a new address can take ~5 minutes for its security certificate; retry every 30 s, up to 10 min).
-4. Confirm the cron runs: after 1-2 minutes, `npx wrangler d1 execute gigachat_db --remote --command "SELECT value FROM settings WHERE key = 'last_run'"` should show a recent run with status "not connected" (expected before the key is pasted).
+4. Confirm the cron runs: on a brand-new Worker the first run can take ~10 minutes (seen: 9). Then `npx wrangler d1 execute gigachat_db --remote --command "SELECT value FROM settings WHERE key = 'last_run'"` should show a recent run with status "not connected" (expected before the key is pasted).
 5. Tell the user: their bot address, their password (and that it's in `DASHBOARD-PASSWORD.txt`), and that it's running but not connected to Instagram yet.
 
 ## 6. Meta app (the user does this)
