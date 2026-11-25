@@ -400,7 +400,7 @@ async function sendFirstDm(env, ig, lead, summary, guard) {
       const text = fill(replies[Math.floor(Math.random() * replies.length)], lead, camp);
       try {
         await ig.replyToComment(lead.comment_id, text);
-        await updateLead(env, lead.id, { public_reply: 'sent' });
+        await updateLead(env, lead.id, { public_reply: 'sent', public_reply_at: nowIso() });
         summary.publicReplies++;
       } catch (e) {
         if (e instanceof BudgetExceeded || (e instanceof IgError && (e.tokenProblem || e.rateLimited))) {

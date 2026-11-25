@@ -8,12 +8,26 @@ export function setTimeZone(tz) {
   try { new Intl.DateTimeFormat('en', { timeZone: tz || 'UTC' }); TZ = tz || 'UTC'; } catch { TZ = 'UTC'; }
 }
 
-export function localTime(t) {
+const toDate = (t) => new Date(typeof t === 'number' ? t : String(t).includes('T') ? t : String(t).replace(' ', 'T') + 'Z');
+
+export function localTime(t, seconds = false) {
   if (!t) return '—';
-  const d = new Date(typeof t === 'number' ? t : String(t).includes('T') ? t : String(t).replace(' ', 'T') + 'Z');
+  const d = toDate(t);
   if (isNaN(d)) return esc(t);
-  return d.toLocaleString('en-GB', { timeZone: TZ, day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false });
+  return d.toLocaleString('en-GB', { timeZone: TZ, day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', ...(seconds ? { second: '2-digit' } : {}), hour12: false });
 }
+
+// "+9s", "+4m 12s", "+2h 5m", "+3d 1h": how long after the comment something happened.
+function delay(from, to) {
+  const s = Math.round((toDate(to) - toDate(from)) / 1000);
+  if (!from || !to || isNaN(s) || s < 0) return '';
+  const [d, h, m] = [Math.floor(s / 86400), Math.floor(s / 3600) % 24, Math.floor(s / 60) % 60];
+  const txt = d ? `${d}d ${h}h` : h ? `${h}h ${m}m` : m ? `${m}m ${s % 60}s` : `${s}s`;
+  return `<br><span class="dt muted" style="font-size:12px">+${txt} after comment</span>`;
+}
+
+// Time cell for the People table: exact time (with seconds) + how long after the comment.
+const timeCell = (from, t) => (t ? `${localTime(t, true)}${delay(from, t)}` : '<span class="muted">—</span>');
 
 const CSS = `
 :root{--bg:#0b0d10;--card:#14181d;--line:#262c34;--text:#e8edf2;--muted:#8b96a3;--accent:#c6f432;--bad:#ff6b6b;--warn:#ffb547;--ok:#4ade80}
@@ -128,9 +142,13 @@ export function campaignPage(c, st, leads, flash) {
     .map(([l, n]) => `<div class="stat"><div class="n">${n || 0}</div><div class="l">${l}</div></div>`).join('');
   const rows = leads.map((l) => {
     const [label, cls] = STATUS[l.status] || [l.status, ''];
-    return `<tr><td>${localTime(l.created_at)}</td><td>@${esc(l.commenter_username || '?')}</td><td>${esc(l.comment_text)}</td>
+    const commented = l.commented_at || l.created_at;
+    const reply = l.public_reply === 'sent'
+      ? (l.public_reply_at ? timeCell(commented, l.public_reply_at) : 'sent <span class="muted" style="font-size:12px">(time not recorded)</span>')
+      : `<span class="${l.public_reply === 'failed' ? 'bad' : 'muted'}">${esc(l.public_reply || '—')}</span>`;
+    return `<tr><td>${localTime(commented, true)}</td><td>@${esc(l.commenter_username || '?')}</td><td>${esc(l.comment_text)}</td>
 <td class="${cls}">${label}${l.follow_fails ? ` <span class="muted">(${l.follow_fails}× not following)</span>` : ''}${l.dm_mode === 'text' ? ' <span class="muted">(no button)</span>' : ''}
-${l.last_error ? `<br><span class="bad" style="font-size:12px">${esc(l.last_error)}</span>` : ''}</td><td class="muted">${esc(l.public_reply || '—')}</td></tr>`;
+${l.last_error ? `<br><span class="bad" style="font-size:12px">${esc(l.last_error)}</span>` : ''}</td><td>${reply}</td><td>${timeCell(commented, l.dm_sent_at)}</td><td>${timeCell(commented, l.delivered_at)}</td></tr>`;
   }).join('');
   return layout(c.name, `<div class="card"><div class="row" style="justify-content:space-between"><div><h1 style="margin:0">${esc(c.name)}</h1>
 <div class="muted">Keywords: ${esc(c.keywords)} · ${c.media_id ? esc(c.media_label || 'one post') : 'any post'} · ${c.active ? '<span class="ok">On</span>' : 'Off'}</div></div>
@@ -138,7 +156,7 @@ ${l.last_error ? `<br><span class="bad" style="font-size:12px">${esc(l.last_erro
 <form method="post" action="/campaigns/${c.id}/toggle" class="inline"><button class="btn sec">${c.active ? 'Turn off' : 'Turn on'}</button></form>
 <form method="post" action="/campaigns/${c.id}/delete" class="inline" onsubmit="return confirm('Delete this campaign and its stats? This cannot be undone.')"><button class="btn bad">Delete</button></form></div></div>
 <div class="grid" style="margin-top:16px">${tiles}</div></div>
-<div class="card"><h2>People (newest first)</h2>${leads.length ? `<div class="tw"><table><tr><th>When</th><th>Who</th><th>Comment</th><th>Status</th><th>Public reply</th></tr>${rows}</table></div>` : '<p class="muted">Nobody yet.</p>'}</div>`, { nav: '/', flash });
+<div class="card"><h2>People (newest first)</h2>${leads.length ? `<div class="tw"><table><tr><th>Commented</th><th>Who</th><th>Comment</th><th>Status</th><th>Public reply</th><th>First DM</th><th>Link sent</th></tr>${rows}</table></div>` : '<p class="muted">Nobody yet.</p>'}</div>`, { nav: '/', flash });
 }
 
 export function logPage(rows, level) {

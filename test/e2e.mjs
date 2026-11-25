@@ -177,6 +177,11 @@ async function main() {
     r = await bot('/campaigns/1');
     check('campaign page shows 3 links delivered', /<div class="n">3<\/div><div class="l">Links delivered/.test(r.text));
     check('campaign page shows 1 new follower (alice)', /<div class="n">1<\/div><div class="l">New followers/.test(r.text));
+    check('campaign page has public reply / first DM / link sent columns', r.text.includes('<th>Public reply</th><th>First DM</th><th>Link sent</th>'));
+    const aliceRow = r.text.split('<tr>').find((x) => x.includes('@alice')) || '';
+    check('alice row shows public reply, DM and link times with delay after comment', (aliceRow.match(/class="dt muted"/g) || []).length === 3, aliceRow);
+    const leadRows = JSON.parse((await bot('/debug.json')).text).leads;
+    check('public reply time is saved', leadRows.some((l) => l.public_reply === 'sent' && l.public_reply_at), leadRows.map((l) => [l.public_reply, l.public_reply_at]));
     r = await bot('/log');
     check('debug log records DMs and links', r.text.includes('dm_sent') && r.text.includes('link_delivered') && r.text.includes('dm_failed'));
     r = await bot('/settings/pause', { paused: '1' });
